@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { auth, db } from "../firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { FIRESTORE_FIELDS } from "../constants/firestoreFields";
@@ -39,69 +39,66 @@ function StudentProfile() {
   };
 
   return (
-    <div className="bg-white/70 backdrop-blur-xl p-6 rounded-2xl shadow-xl border border-white/50 transition duration-300 hover:shadow-2xl hover:-translate-y-1 animate-fadeIn space-y-4">
-      <h2 className="text-3xl font-bold tracking-tight text-slate-800">
+    <div className="premium-panel tone-teal p-6 rounded-2xl animate-fadeIn space-y-4">
+      <h2 className="headline-display text-2xl sm:text-3xl text-slate-100">
         Student Profile
       </h2>
 
       <input
-        className="border p-2 rounded w-full"
+        className="premium-input"
         placeholder="Full Name"
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
 
-      <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row gap-2">
         <input
-          className="border p-2 rounded flex-1"
+          className="premium-input flex-1"
           placeholder="Skill Name"
           value={skillName}
           onChange={(e) => setSkillName(e.target.value)}
         />
         <select
-          className="border p-2 rounded"
+          className="premium-input sm:w-36"
           value={level}
           onChange={(e) => setLevel(Number(e.target.value))}
         >
-          {[1,2,3,4,5].map((num) => (
-            <option key={num} value={num}>{num}</option>
+          {[1, 2, 3, 4, 5].map((num) => (
+            <option className="text-slate-900" key={num} value={num}>{num}</option>
           ))}
         </select>
-        <button
-          className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold px-6 py-2 rounded-xl shadow-md hover:shadow-xl hover:scale-105 active:scale-95 transition duration-200"
-          onClick={addSkill}
-        >
+        <button className="premium-btn sm:w-28" onClick={addSkill}>
           Add
         </button>
       </div>
 
-      <div>
-        {skills && skills.length > 0 &&
-          skills.map((s, index) => (
-            <div key={index} className="text-sm">
+      {skills.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {skills.map((s, index) => (
+            <span key={index} className="premium-pill px-3 py-1 text-xs">
               {s?.name} - Level {s?.level}
-            </div>
+            </span>
           ))}
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <input
+          className="premium-input"
+          placeholder="CGPA"
+          value={cgpa}
+          onChange={(e) => setCgpa(e.target.value)}
+        />
+
+        <input
+          className="premium-input"
+          placeholder="Number of Projects"
+          value={projects}
+          onChange={(e) => setProjects(e.target.value)}
+        />
       </div>
 
-      <input
-        className="border p-2 rounded w-full"
-        placeholder="CGPA"
-        value={cgpa}
-        onChange={(e) => setCgpa(e.target.value)}
-      />
-
-      <input
-        className="border p-2 rounded w-full"
-        placeholder="Number of Projects"
-        value={projects}
-        onChange={(e) => setProjects(e.target.value)}
-      />
-
-      <button
-        className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-xl shadow-md hover:scale-105 transition duration-300"
-        onClick={saveProfile}
-      >
+      <button className="premium-btn w-full sm:w-auto" onClick={saveProfile}>
         Update Profile
       </button>
     </div>
@@ -109,3 +106,4 @@ function StudentProfile() {
 }
 
 export default StudentProfile;
+

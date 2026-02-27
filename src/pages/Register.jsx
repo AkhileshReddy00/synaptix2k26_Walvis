@@ -2,7 +2,7 @@ import { useState } from "react";
 import { auth, db } from "../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Register() {
   const [email, setEmail] = useState("");
@@ -31,39 +31,54 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center">
-      <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-indigo-600 bg-clip-text text-transparent border-b pb-4 mb-6">
-        Register
-      </h1>
+    <div className="min-h-[82vh] flex items-center justify-center fade-in">
+      <div className="premium-panel tone-rose w-full max-w-xl rounded-3xl p-6 sm:p-10">
+        <p className="text-xs uppercase tracking-[0.22em] text-amber-200/90">
+          New Account
+        </p>
+        <h1 className="headline-display mt-2 text-3xl sm:text-4xl leading-tight">
+          Skill-Based Explainable Internship Matching Platform
+        </h1>
+        <p className="text-slate-300 mt-3 text-sm sm:text-base">
+          Create your account and select your role to unlock tailored workflows.
+        </p>
 
-      <input
-        className="p-2 mb-3 border rounded w-64"
-        type="email"
-        placeholder="Email"
-        onChange={(e) => setEmail(e.target.value)}
-      />
+        <div className="mt-8 space-y-3">
+          <input
+            className="premium-input"
+            type="email"
+            placeholder="Work Email"
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-      <input
-        className="p-2 mb-3 border rounded w-64"
-        type="password"
-        placeholder="Password"
-        onChange={(e) => setPassword(e.target.value)}
-      />
+          <input
+            className="premium-input"
+            type="password"
+            placeholder="Password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-      <select
-        className="p-2 mb-3 border rounded w-64"
-        onChange={(e) => setRole(e.target.value)}
-      >
-        <option value="student">Student</option>
-        <option value="recruiter">Recruiter</option>
-      </select>
+          <select
+            className="premium-input"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+          >
+            <option className="text-slate-900" value="student">Student</option>
+            <option className="text-slate-900" value="recruiter">Recruiter</option>
+          </select>
+        </div>
 
-      <button
-        className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold px-6 py-2 rounded-xl shadow-md hover:shadow-xl hover:scale-105 active:scale-95 transition duration-200"
-        onClick={handleRegister}
-      >
-        Register
-      </button>
+        <button className="premium-btn w-full mt-5" onClick={handleRegister}>
+          Register
+        </button>
+
+        <p className="mt-5 text-sm text-slate-300">
+          Already have an account?{" "}
+          <Link className="text-amber-200 font-semibold hover:text-amber-100" to="/">
+            Login
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

@@ -1,21 +1,24 @@
-import { useEffect, useState } from "react";
-import { collection, addDoc, query, where, orderBy, onSnapshot, serverTimestamp, updateDoc, doc } from "firebase/firestore";
+﻿import { useEffect, useState } from "react";
+import {
+  collection,
+  addDoc,
+  query,
+  where,
+  orderBy,
+  onSnapshot,
+  serverTimestamp,
+  updateDoc,
+  doc
+} from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { FIRESTORE_FIELDS } from "../constants/firestoreFields";
 
-// chat window for displaying messages of a specific conversation
 function Chat({ conversationId }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
 
-  // load messages for this conversation in real-time
   useEffect(() => {
-    if (!conversationId) {
-      console.log("Chat: No conversationId provided");
-      return;
-    }
-
-    console.log("Chat: Loading messages for conversation:", conversationId);
+    if (!conversationId) return;
 
     const q = query(
       collection(db, "messages"),
@@ -23,24 +26,22 @@ function Chat({ conversationId }) {
       orderBy(FIRESTORE_FIELDS.TIMESTAMP, "asc")
     );
 
-    const unsubscribe = onSnapshot(q, snapshot => {
-      const msgs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-      console.log("Chat: Loaded messages:", msgs.length);
-      setMessages(msgs);
-    }, error => {
-      console.error("Chat: Error loading messages:", error);
-    });
+    const unsubscribe = onSnapshot(
+      q,
+      snapshot => {
+        const msgs = snapshot.docs.map(docItem => ({ id: docItem.id, ...docItem.data() }));
+        setMessages(msgs);
+      },
+      error => {
+        console.error("Chat load error:", error);
+      }
+    );
 
     return () => unsubscribe();
   }, [conversationId]);
 
   const sendMessage = async () => {
-    if (!input.trim() || !conversationId) {
-      console.warn("Cannot send: input empty or no conversationId", { input: input.trim(), conversationId });
-      return;
-    }
-
-    console.log("Sending message to conversation:", conversationId);
+    if (!input.trim() || !conversationId) return;
 
     try {
       await addDoc(collection(db, "messages"), {
@@ -49,14 +50,11 @@ function Chat({ conversationId }) {
         text: input,
         [FIRESTORE_FIELDS.TIMESTAMP]: serverTimestamp()
       });
-      console.log("Message sent successfully");
 
-      // update conversation lastMessage and timestamp
       await updateDoc(doc(db, "conversations", conversationId), {
         lastMessage: input,
         [FIRESTORE_FIELDS.UPDATED_AT]: serverTimestamp()
       });
-      console.log("Conversation updated");
 
       setInput("");
     } catch (err) {
@@ -65,38 +63,39 @@ function Chat({ conversationId }) {
     }
   };
 
-  // mark incoming messages as read when viewed
   useEffect(() => {
     if (!conversationId) return;
+
     const toMark = messages.filter(
-      m => m.read === false && m.senderId !== auth.currentUser.uid
+      msg => msg.read === false && msg.senderId !== auth.currentUser.uid
     );
-    toMark.forEach(m => {
-      updateDoc(doc(db, "messages", m.id), { read: true }).catch(() => {});
+
+    toMark.forEach(msg => {
+      updateDoc(doc(db, "messages", msg.id), { read: true }).catch(() => {});
     });
   }, [messages, conversationId]);
 
   if (!conversationId) {
     return (
-      <div className="flex-1 bg-white rounded-xl shadow p-4 flex items-center justify-center">
-        <p className="text-gray-500">Select a conversation to start chatting</p>
+      <div className="premium-panel tone-teal rounded-xl p-5 flex items-center justify-center min-h-[22rem]">
+        <p className="text-slate-300">Select a conversation to start chatting.</p>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 bg-white rounded-xl shadow p-4 h-96 flex flex-col">
-      <div className="flex-1 overflow-y-auto space-y-3 mb-4">
+    <div className="premium-panel tone-indigo rounded-xl p-4 h-96 flex flex-col">
+      <div className="flex-1 overflow-y-auto space-y-3 mb-4 pr-1">
         {messages.length === 0 ? (
-          <p className="text-gray-400 text-center pt-4">Start the conversation...</p>
+          <p className="text-slate-300 text-center pt-4">Start the conversation...</p>
         ) : (
           messages.map(msg => (
             <div
               key={msg.id}
               className={`max-w-xs p-3 rounded-xl text-sm ${
                 msg.senderId === auth.currentUser.uid
-                  ? "bg-indigo-600 text-white ml-auto"
-                  : "bg-gray-100 text-black"
+                  ? "bg-amber-200 text-slate-900 ml-auto"
+                  : "bg-white/10 text-slate-100"
               }`}
             >
               {msg.text}
@@ -109,14 +108,11 @@ function Chat({ conversationId }) {
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyPress={(e) => e.key === "Enter" && sendMessage()}
-          className="border border-gray-300 rounded-lg flex-1 p-2 text-sm"
+          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+          className="premium-input flex-1"
           placeholder="Type message..."
         />
-        <button
-          onClick={sendMessage}
-          className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
-        >
+        <button onClick={sendMessage} className="premium-btn">
           Send
         </button>
       </div>
@@ -125,3 +121,4 @@ function Chat({ conversationId }) {
 }
 
 export default Chat;
+

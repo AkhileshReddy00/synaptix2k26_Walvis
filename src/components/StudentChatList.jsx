@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { auth, db } from "../firebase";
 import { collection, query, where, orderBy, onSnapshot } from "firebase/firestore";
 import { FIRESTORE_FIELDS } from "../constants/firestoreFields";
 
-// lists all conversations for the logged-in student
 function StudentChatList({ onSelectConversation }) {
   const [conversations, setConversations] = useState([]);
 
   useEffect(() => {
+    if (!auth.currentUser) return;
+
     const q = query(
       collection(db, "conversations"),
       where(FIRESTORE_FIELDS.STUDENT_ID, "==", auth.currentUser.uid),
@@ -15,7 +16,7 @@ function StudentChatList({ onSelectConversation }) {
     );
 
     const unsubscribe = onSnapshot(q, snapshot => {
-      const convos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const convos = snapshot.docs.map(docItem => ({ id: docItem.id, ...docItem.data() }));
       setConversations(convos);
     });
 
@@ -23,24 +24,26 @@ function StudentChatList({ onSelectConversation }) {
   }, []);
 
   return (
-    <div className="space-y-2">
+    <div className="premium-panel tone-indigo rounded-xl p-3 space-y-2 max-h-96 overflow-y-auto">
       {conversations.map(convo => (
-        <div
+        <button
           key={convo.id}
           onClick={() => onSelectConversation(convo.id)}
-          className="p-4 bg-white shadow rounded-xl hover:bg-gray-100 cursor-pointer"
+          className="w-full text-left p-3 rounded-lg chat-list-item"
         >
-          <p className="font-semibold">Recruiter</p>
-          <p className="text-sm text-gray-500 truncate">
-            {convo.lastMessage}
+          <p className="font-semibold text-sm text-slate-100">Recruiter</p>
+          <p className="text-xs text-slate-300 truncate mt-1">
+            {convo.lastMessage || "(no messages yet)"}
           </p>
-        </div>
+        </button>
       ))}
       {conversations.length === 0 && (
-        <p className="text-gray-500">No conversations yet.</p>
+        <p className="text-slate-300 text-center py-3">No conversations yet.</p>
       )}
     </div>
   );
 }
 
 export default StudentChatList;
+
+

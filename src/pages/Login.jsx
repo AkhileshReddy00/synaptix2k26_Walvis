@@ -6,6 +6,7 @@ import { useNavigate, Link } from "react-router-dom";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [lampOn, setLampOn] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -18,38 +19,61 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center">
-      <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-indigo-600 bg-clip-text text-transparent border-b pb-4 mb-6">
-        Login
-      </h1>
+    <div className="min-h-[82vh] flex items-center justify-center fade-in">
+      <div className="premium-panel tone-indigo w-full max-w-xl rounded-3xl p-6 sm:p-10">
+        <p className="text-xs uppercase tracking-[0.22em] text-amber-200/90">
+          Premium Access
+        </p>
+        <h1 className="headline-display mt-2 text-3xl sm:text-4xl leading-tight">
+          Skill-Based Explainable Internship Matching Platform
+        </h1>
+        <p className="text-slate-300 mt-3 text-sm sm:text-base">
+          Sign in to continue to your personalized student or recruiter workspace.
+        </p>
 
-      <input
-        className="p-2 mb-3 border rounded w-64"
-        type="email"
-        placeholder="Email"
-        onChange={(e) => setEmail(e.target.value)}
-      />
+        <div className="mt-8 flex flex-col sm:flex-row gap-4 sm:items-start">
+          <div className="flex-1 space-y-3">
+            <input
+              className="premium-input"
+              type="email"
+              placeholder="Work Email"
+              onFocus={() => setLampOn(true)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setLampOn(true);
+              }}
+            />
 
-      <input
-        className="p-2 mb-3 border rounded w-64"
-        type="password"
-        placeholder="Password"
-        onChange={(e) => setPassword(e.target.value)}
-      />
+            <input
+              className="premium-input"
+              type="password"
+              placeholder="Password"
+              onFocus={() => setLampOn(false)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setLampOn(false);
+              }}
+            />
+          </div>
 
-      <button
-        className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold px-6 py-2 rounded-xl shadow-md hover:shadow-xl hover:scale-105 active:scale-95 transition duration-200"
-        onClick={handleLogin}
-      >
-        Login
-      </button>
+          <div className={`auth-lamp mx-auto sm:mx-0 sm:mt-1 ${lampOn ? "on" : ""}`}>
+            <div className="auth-lamp-head" />
+            <div className="auth-lamp-neck" />
+            <div className="auth-lamp-glow" />
+          </div>
+        </div>
 
-      <p className="mt-4">
-        Don't have account?{" "}
-        <Link className="text-blue-600" to="/register">
-          Register
-        </Link>
-      </p>
+        <button className="premium-btn w-full mt-5" onClick={handleLogin}>
+          Login
+        </button>
+
+        <p className="mt-5 text-sm text-slate-300">
+          Don&apos;t have an account?{" "}
+          <Link className="text-amber-200 font-semibold hover:text-amber-100" to="/register">
+            Register
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

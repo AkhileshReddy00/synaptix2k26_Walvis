@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { signOut } from "firebase/auth";
@@ -42,28 +42,33 @@ function Dashboard() {
   };
 
   if (!role) {
-    return <div className="p-10">Loading...</div>;
+    return <div className="p-10 text-slate-200">Loading...</div>;
   }
 
   return (
-    <div className="min-h-screen p-10">
-      <div className="mb-8 border-b pb-6 fade-in">
-        <h1 className="text-4xl font-extrabold bg-gradient-to-r from-indigo-700 to-blue-600 bg-clip-text text-transparent">
-          SkillMatch AI
+    <div className="min-h-screen px-1 sm:px-2 pb-8">
+      <div className="premium-panel tone-amber rounded-3xl p-5 sm:p-7 mb-6 fade-in">
+        <p className="text-xs uppercase tracking-[0.22em] text-amber-200/90">
+          Team Walvis
+        </p>
+        <h1 className="headline-display mt-2 text-2xl sm:text-4xl leading-tight">
+          Skill-Based Explainable Internship Matching Platform
         </h1>
-        <p className="text-gray-500 mt-2">
-          Intelligent Internship Matching with Explainable Ranking
+        <p className="text-slate-300 mt-2">
+          {role === "student"
+            ? "Student workspace with profile insights, recommendation intelligence, and real-time recruiter chat."
+            : "Recruiter workspace for internship creation, candidate ranking, and real-time conversations."}
         </p>
       </div>
-      <h2>ROLE: {role}</h2>
-      <div className="flex justify-between border-b pb-4 mb-6">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-indigo-600 bg-clip-text text-transparent">
+
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+        <h2 className="text-xl sm:text-2xl font-bold text-slate-100">
           {role === "student" ? "Student Dashboard" : "Recruiter Dashboard"}
-        </h1>
-        <button
-          className="bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold px-4 py-2 rounded-xl shadow-md hover:shadow-xl hover:scale-105 active:scale-95 transition duration-200"
-          onClick={handleLogout}
-        >
+        </h2>
+        <span className="premium-pill w-fit px-3 py-1 text-xs uppercase tracking-wider text-slate-100/90">
+          Role: {role}
+        </span>
+        <button className="premium-btn-alt w-fit" onClick={handleLogout}>
           Logout
         </button>
       </div>
@@ -72,17 +77,19 @@ function Dashboard() {
         <>
           <Notifications />
           <StudentProfile />
-          <div className="mt-6">
-            <h3 className="text-xl font-semibold mb-2">Your Conversations</h3>
-            <div className="flex gap-6">
-              <div className="w-1/3">
+          <div className="premium-panel tone-indigo rounded-2xl p-5 mt-6">
+            <h3 className="text-xl font-semibold mb-4 text-slate-100">Your Conversations</h3>
+            <div className="flex flex-col lg:flex-row gap-4">
+              <div className="lg:w-1/3">
                 <StudentChatList onSelectConversation={setActiveConversationId} />
               </div>
               <div className="flex-1">
                 {activeConversationId ? (
                   <Chat conversationId={activeConversationId} />
                 ) : (
-                  <p className="text-gray-500 mt-4">Select a conversation to start chatting</p>
+                  <div className="premium-panel tone-teal rounded-xl p-5 text-slate-300">
+                    Select a conversation to start chatting.
+                  </div>
                 )}
               </div>
             </div>
@@ -95,16 +102,15 @@ function Dashboard() {
           <RankingSystem />
         </>
       )}
-      <div className="mt-16 pt-8 border-t border-gray-200 text-center">
-        <h3 className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
-          Team Walvis
-        </h3>
 
-        <p className="text-gray-500 mt-2 text-sm">
+      <div className="mt-12 premium-panel tone-rose rounded-2xl p-6 text-center">
+        <h3 className="text-lg font-bold text-amber-200">Team Walvis</h3>
+
+        <p className="text-slate-300 mt-2 text-sm">
           Skill-Based Explainable Internship Matching Platform
         </p>
 
-        <p className="text-gray-400 mt-3 text-xs">
+        <p className="text-slate-400 mt-3 text-xs">
           © {new Date().getFullYear()} Team Walvis. All rights reserved.
         </p>
       </div>
@@ -113,3 +119,4 @@ function Dashboard() {
 }
 
 export default Dashboard;
+
