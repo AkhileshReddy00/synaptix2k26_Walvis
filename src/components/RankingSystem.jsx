@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { db, auth } from "../firebase";
 import { collection, getDocs, addDoc } from "firebase/firestore";
 import calculateMatchScore from "../utils/scoring";
+import { Star, TrendingUp } from "lucide-react";
 
 function RankingSystem() {
   const [internships, setInternships] = useState([]);
@@ -88,7 +89,7 @@ function RankingSystem() {
   };
 
   return (
-    <div className="bg-white/80 backdrop-blur-lg p-6 rounded-2xl shadow-lg border border-white/40 transition duration-300 hover:shadow-2xl hover:-translate-y-1 hover:ring-2 hover:ring-blue-400 animate-fadeIn space-y-4 mt-6">
+    <div className="bg-white/70 backdrop-blur-xl p-6 rounded-2xl shadow-xl border border-white/50 transition duration-300 hover:shadow-2xl hover:-translate-y-1 animate-fadeIn space-y-4 mt-6">
       
       <h2 className="text-3xl font-bold tracking-tight text-slate-800">
         AI-Based Candidate Ranking
@@ -115,38 +116,29 @@ function RankingSystem() {
       </select>
 
       <button
-        className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition duration-300"
+        className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold px-6 py-2 rounded-xl shadow-md hover:shadow-xl hover:scale-105 active:scale-95 transition duration-200"
         onClick={generateRanking}
       >
         Generate Ranking
       </button>
 
-      {/* Summary Section */}
-      {ranking.length > 0 && (
-        <div className="bg-white/80 backdrop-blur-lg p-4 rounded-2xl border border-white/40 transition duration-300 hover:shadow-2xl hover:-translate-y-1 hover:ring-2 hover:ring-blue-400 animate-fadeIn">
-          <p className="font-semibold">
-            Total Applicants: {ranking.length}
-          </p>
-          <p>
-            Top Match: {ranking[0]?.percentage}%
-          </p>
-        </div>
-      )}
-
+      {/* Animated Stats Section */}
       {analytics && (
-        <div className="grid grid-cols-3 gap-4 bg-white/80 backdrop-blur-lg p-4 rounded-2xl border border-white/40 transition duration-300 hover:shadow-2xl hover:-translate-y-1 hover:ring-2 hover:ring-blue-400 animate-fadeIn">
-          <div>
-            <p className="text-sm text-gray-500">Applicants</p>
-            <p className="text-xl font-bold">{ranking.length}</p>
+        <div className="grid grid-cols-3 gap-6 mb-6">
+          <div className="bg-white/70 backdrop-blur-xl p-4 rounded-xl shadow-md text-center fade-in">
+            <p className="text-gray-500 text-sm">Total Applicants</p>
+            <p className="text-2xl font-bold">{ranking.length}</p>
           </div>
-          <div>
-            <p className="text-sm text-gray-500">Average Match</p>
-            <p className="text-xl font-bold">{analytics.average}%</p>
+
+          <div className="bg-white/70 backdrop-blur-xl p-4 rounded-xl shadow-md text-center fade-in">
+            <p className="text-gray-500 text-sm">Average Match</p>
+            <p className="text-2xl font-bold">{analytics?.average}%</p>
           </div>
-          <div>
-            <p className="text-sm text-gray-500">Top Score</p>
-            <p className="text-xl font-bold text-green-600">
-              {analytics.highest}%
+
+          <div className="bg-white/70 backdrop-blur-xl p-4 rounded-xl shadow-md text-center fade-in">
+            <p className="text-gray-500 text-sm">Top Candidate</p>
+            <p className="text-2xl font-bold text-green-600">
+              {analytics?.highest}%
             </p>
           </div>
         </div>
@@ -160,15 +152,16 @@ function RankingSystem() {
         {ranking.map((student, index) => (
           <div
             key={student.id}
-            className={`bg-white/80 backdrop-blur-lg p-4 rounded-2xl shadow-lg border border-white/40 transition duration-300 hover:shadow-2xl hover:-translate-y-1 hover:ring-2 hover:ring-blue-400 animate-fadeIn ${
+            className={`p-6 rounded-2xl shadow-xl transition duration-300 transform hover:scale-[1.02] fade-in ${
               index === 0
-                ? "bg-gradient-to-r from-green-100 to-emerald-100 border-green-400 ring-2 ring-green-400 scale-105"
-                : "bg-gray-50"
+                ? "bg-gradient-to-r from-green-100 to-emerald-100 border border-green-400 ring-2 ring-green-400"
+                : "bg-white/70 backdrop-blur-xl border border-white/40"
             }`}
           >
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="text-xl font-bold tracking-tight">
+                <h3 className="text-xl font-bold tracking-tight flex items-center">
+                  {index === 0 && <Star className="w-5 h-5 text-yellow-400 mr-1" />}
                   Rank {index + 1}
                 </h3>
                 <p className="text-sm text-gray-600">
@@ -177,8 +170,8 @@ function RankingSystem() {
               </div>
 
               <div className="text-right">
-                <p className="text-3xl font-extrabold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
-                  {student.percentage}%
+                <p className="text-3xl font-extrabold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent flex items-center justify-center">
+                  <TrendingUp className="w-6 h-6 mr-1" /> {student.percentage}%
                 </p>
                 <p className="text-sm text-gray-500">
                   Score: {student.finalScore}
@@ -210,7 +203,7 @@ function RankingSystem() {
                 <span className="bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent font-semibold">Shortlisted ✓</span>
               ) : (
                 <button
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition duration-300"
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold px-6 py-2 rounded-xl shadow-md hover:shadow-xl hover:scale-105 active:scale-95 transition duration-200"
                   onClick={() => shortlistCandidate(student)}
                 >
                   Shortlist

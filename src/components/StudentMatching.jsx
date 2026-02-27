@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { db, auth } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import calculateMatchScore from "../utils/scoring";
+import { Star, TrendingUp } from "lucide-react";
 
 function StudentMatching() {
   const [internships, setInternships] = useState([]);
@@ -56,7 +57,7 @@ function StudentMatching() {
   }, []);
 
   return (
-    <div className="bg-white/80 backdrop-blur-lg p-6 rounded-2xl shadow-lg border border-white/40 transition duration-300 hover:shadow-2xl hover:-translate-y-1 hover:ring-2 hover:ring-blue-400 animate-fadeIn mt-6">
+    <div className="bg-white/70 backdrop-blur-xl p-6 rounded-2xl shadow-xl border border-white/50 transition duration-300 hover:shadow-2xl hover:-translate-y-1 animate-fadeIn mt-6">
       <h2 className="text-3xl font-bold tracking-tight text-slate-800 mb-1">
         Recommended Internships
       </h2>
@@ -69,18 +70,23 @@ function StudentMatching() {
       {results.map((item, index) => (
         <div
           key={item.id}
-          className={`bg-white/80 backdrop-blur-lg border border-white/40 p-5 rounded-2xl mb-4 transition duration-300 hover:shadow-2xl hover:-translate-y-1 hover:ring-2 hover:ring-blue-400 animate-fadeIn ${
+          className={`p-6 rounded-2xl shadow-xl transition duration-300 transform hover:scale-[1.02] fade-in ${
             index === 0
-              ? "bg-gradient-to-r from-green-100 to-emerald-100 border-green-400 ring-2 ring-green-400 scale-105"
-              : "bg-gray-50"
+              ? "bg-gradient-to-r from-green-200 to-emerald-200 border border-green-500 ring-2 ring-green-400"
+              : "bg-white/70 backdrop-blur-xl border border-white/40"
           }`}
         >
           <div className="flex justify-between items-center">
-            <h3 className="text-xl font-bold tracking-tight">
+            <h3 className="text-xl font-bold tracking-tight flex items-center">
               {item.title}
+              {index === 0 && (
+                <span className="text-xs bg-green-600 text-white px-2 py-1 rounded-full ml-2">
+                  TOP MATCH
+                </span>
+              )}
             </h3>
-            <span className="text-3xl font-extrabold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
-              {item.percentage}%
+            <span className="text-3xl font-extrabold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 mr-1" /> {item.percentage}%
             </span>
           </div>
 
