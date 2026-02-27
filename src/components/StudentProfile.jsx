@@ -3,6 +3,7 @@ import { auth, db } from "../firebase";
 import { doc, setDoc } from "firebase/firestore";
 
 function StudentProfile() {
+  const [name, setName] = useState("");
   const [skillName, setSkillName] = useState("");
   const [level, setLevel] = useState(1);
   const [skills, setSkills] = useState([]);
@@ -21,6 +22,8 @@ function StudentProfile() {
     if (!user) return;
 
     await setDoc(doc(db, "studentProfiles", user.uid), {
+      name,
+      email: user.email,
       skills,
       cgpa: Number(cgpa),
       projects: Number(projects),
@@ -34,6 +37,13 @@ function StudentProfile() {
       <h2 className="text-3xl font-bold tracking-tight text-slate-800">
         Student Profile
       </h2>
+
+      <input
+        className="border p-2 rounded w-full"
+        placeholder="Full Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
 
       <div className="flex gap-2">
         <input
