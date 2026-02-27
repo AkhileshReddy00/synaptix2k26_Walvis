@@ -24,12 +24,12 @@ function StudentChatList({ onSelectConversation }) {
   }, []);
 
   return (
-    <div className="premium-panel tone-indigo rounded-xl p-3 space-y-2 max-h-96 overflow-y-auto">
+    <div className="wa-list max-h-96 overflow-y-auto">
       {conversations.map(convo => (
         <button
           key={convo.id}
           onClick={() => onSelectConversation(convo.id)}
-          className="w-full text-left p-3 rounded-lg chat-list-item"
+          className="wa-list-item"
         >
           <p className="font-semibold text-sm text-slate-100">Recruiter</p>
           <p className="text-xs text-slate-300 truncate mt-1">

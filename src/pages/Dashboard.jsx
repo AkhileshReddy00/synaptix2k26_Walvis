@@ -11,6 +11,17 @@ import Chat from "../components/Chat";
 import InternshipForm from "../components/InternshipForm";
 import RankingSystem from "../components/RankingSystem";
 
+const DASHBOARD_SYMBOLS = [
+  { char: "*", x: 8, y: 16, delay: "0s", duration: "6.2s" },
+  { char: "{}", x: 19, y: 38, delay: "0.8s", duration: "7.1s" },
+  { char: "<>", x: 30, y: 74, delay: "0.4s", duration: "6.8s" },
+  { char: "#", x: 46, y: 22, delay: "1.2s", duration: "7.4s" },
+  { char: "+", x: 59, y: 82, delay: "0.6s", duration: "6.5s" },
+  { char: "%", x: 73, y: 21, delay: "1s", duration: "7.2s" },
+  { char: "@", x: 84, y: 44, delay: "0.2s", duration: "6.7s" },
+  { char: "~", x: 92, y: 69, delay: "1.4s", duration: "7.6s" }
+];
+
 function Dashboard() {
   const [role, setRole] = useState(null);
   const [activeConversationId, setActiveConversationId] = useState(null);
@@ -36,6 +47,23 @@ function Dashboard() {
     fetchUserRole();
   }, []);
 
+  useEffect(() => {
+    document.body.classList.add("dashboard-plain");
+    return () => {
+      document.body.classList.remove("dashboard-plain");
+    };
+  }, []);
+
+  useEffect(() => {
+    document.body.classList.remove("dashboard-recruiter-bg", "dashboard-student-bg");
+    if (role === "recruiter") document.body.classList.add("dashboard-recruiter-bg");
+    if (role === "student") document.body.classList.add("dashboard-student-bg");
+
+    return () => {
+      document.body.classList.remove("dashboard-recruiter-bg", "dashboard-student-bg");
+    };
+  }, [role]);
+
   const handleLogout = async () => {
     await signOut(auth);
     navigate("/");
@@ -46,7 +74,27 @@ function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen px-1 sm:px-2 pb-8">
+    <div
+      className={`relative overflow-hidden min-h-screen px-1 sm:px-2 pb-8 dashboard-theme ${
+        role === "student" ? "dashboard-student" : "dashboard-recruiter"
+      }`}
+    >
+      <div className="dashboard-symbol-layer" aria-hidden="true">
+        {DASHBOARD_SYMBOLS.map((item, index) => (
+          <span
+            key={`${item.char}-${index}`}
+            className="dashboard-symbol"
+            style={{
+              left: `${item.x}%`,
+              top: `${item.y}%`,
+              animationDelay: item.delay,
+              animationDuration: item.duration
+            }}
+          >
+            {item.char}
+          </span>
+        ))}
+      </div>
       <div className="premium-panel tone-amber rounded-3xl p-5 sm:p-7 mb-6 fade-in">
         <p className="text-xs uppercase tracking-[0.22em] text-amber-200/90">
           Team Walvis
@@ -74,10 +122,10 @@ function Dashboard() {
       </div>
 
       {role === "student" ? (
-        <>
+        <div className="student-dashboard-flow">
           <Notifications />
           <StudentProfile />
-          <div className="premium-panel tone-indigo rounded-2xl p-5 mt-6">
+          <div className="premium-panel tone-indigo rounded-2xl p-5 mt-6 student-chat-panel">
             <h3 className="text-xl font-semibold mb-4 text-slate-100">Your Conversations</h3>
             <div className="flex flex-col lg:flex-row gap-4">
               <div className="lg:w-1/3">
@@ -95,7 +143,7 @@ function Dashboard() {
             </div>
           </div>
           <StudentMatching />
-        </>
+        </div>
       ) : (
         <>
           <InternshipForm />

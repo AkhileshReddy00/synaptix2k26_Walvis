@@ -32,7 +32,7 @@ function RecruiterChatList({ onSelectConversation }) {
   }, []);
 
   return (
-    <div className="premium-panel tone-rose rounded-xl p-3 space-y-2 max-h-96 overflow-y-auto lg:w-80">
+    <div className="wa-list max-h-96 overflow-y-auto lg:w-80">
       {conversations.length === 0 && (
         <p className="text-slate-300 text-center py-4">No conversations yet</p>
       )}
@@ -40,7 +40,7 @@ function RecruiterChatList({ onSelectConversation }) {
         <button
           key={convo.id}
           onClick={() => onSelectConversation(convo.id)}
-          className="w-full text-left p-3 rounded-lg chat-list-item"
+          className="wa-list-item"
         >
           <p className="font-semibold text-sm text-slate-100">Student</p>
           <p className="text-xs text-slate-300 truncate mt-1">

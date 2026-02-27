@@ -66,7 +66,9 @@ function StudentMatching() {
         {results.map((item, index) => (
           <div
             key={item.id}
-            className={`rounded-2xl p-5 ${index === 0 ? "list-card-alt" : "list-card"}`}
+            className={`rounded-2xl p-5 ${
+              index === 0 ? "list-card-alt top-highlight-card" : "list-card"
+            }`}
           >
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <h3 className="text-lg sm:text-xl font-bold tracking-tight text-slate-100 flex items-center">

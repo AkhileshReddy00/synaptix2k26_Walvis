@@ -196,7 +196,9 @@ function RankingSystem() {
         {ranking.map((student, index) => (
           <div
             key={student.id}
-            className={`p-5 rounded-2xl ${index === 0 ? "list-card-alt" : "list-card"}`}
+            className={`p-5 rounded-2xl ${
+              index === 0 ? "list-card-alt top-highlight-card" : "list-card"
+            }`}
           >
             <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-3">
               <div>

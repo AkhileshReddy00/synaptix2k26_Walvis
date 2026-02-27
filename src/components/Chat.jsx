@@ -77,14 +77,14 @@ function Chat({ conversationId }) {
 
   if (!conversationId) {
     return (
-      <div className="premium-panel tone-teal rounded-xl p-5 flex items-center justify-center min-h-[22rem]">
+      <div className="wa-chat-empty min-h-[22rem]">
         <p className="text-slate-300">Select a conversation to start chatting.</p>
       </div>
     );
   }
 
   return (
-    <div className="premium-panel tone-indigo rounded-xl p-4 h-96 flex flex-col">
+    <div className="wa-chat-window h-96 flex flex-col">
       <div className="flex-1 overflow-y-auto space-y-3 mb-4 pr-1">
         {messages.length === 0 ? (
           <p className="text-slate-300 text-center pt-4">Start the conversation...</p>
@@ -92,10 +92,10 @@ function Chat({ conversationId }) {
           messages.map(msg => (
             <div
               key={msg.id}
-              className={`max-w-xs p-3 rounded-xl text-sm ${
+              className={`max-w-xs p-3 rounded-lg text-sm ${
                 msg.senderId === auth.currentUser.uid
-                  ? "bg-amber-200 text-slate-900 ml-auto"
-                  : "bg-white/10 text-slate-100"
+                  ? "wa-bubble-out ml-auto"
+                  : "wa-bubble-in"
               }`}
             >
               {msg.text}
@@ -109,10 +109,10 @@ function Chat({ conversationId }) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-          className="premium-input flex-1"
+          className="wa-input flex-1"
           placeholder="Type message..."
         />
-        <button onClick={sendMessage} className="premium-btn">
+        <button onClick={sendMessage} className="wa-send-btn">
           Send
         </button>
       </div>
