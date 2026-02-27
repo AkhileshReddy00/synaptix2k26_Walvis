@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { auth, db } from "../firebase";
 import { doc, setDoc } from "firebase/firestore";
+import { FIRESTORE_FIELDS } from "../constants/firestoreFields";
 
 function StudentProfile() {
   const [name, setName] = useState("");
@@ -21,13 +22,18 @@ function StudentProfile() {
     const user = auth.currentUser;
     if (!user) return;
 
-    await setDoc(doc(db, "studentProfiles", user.uid), {
-      name,
-      email: user.email,
-      skills,
-      cgpa: Number(cgpa),
-      projects: Number(projects),
-    });
+    await setDoc(
+      doc(db, "studentProfiles", user.uid),
+      {
+        name,
+        email: user.email,
+        cgpa: Number(cgpa),
+        projects: Number(projects),
+        skills,
+        [FIRESTORE_FIELDS.UPDATED_AT]: new Date()
+      },
+      { merge: true }
+    );
 
     alert("Profile Saved Successfully");
   };
@@ -93,10 +99,10 @@ function StudentProfile() {
       />
 
       <button
-        className="bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold px-6 py-2 rounded-xl shadow-md hover:shadow-xl hover:scale-105 active:scale-95 transition duration-200"
+        className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-xl shadow-md hover:scale-105 transition duration-300"
         onClick={saveProfile}
       >
-        Save Profile
+        Update Profile
       </button>
     </div>
   );

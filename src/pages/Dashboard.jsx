@@ -5,11 +5,15 @@ import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import StudentProfile from "../components/StudentProfile";
 import StudentMatching from "../components/StudentMatching";
+import Notifications from "../components/Notifications";
+import StudentChatList from "../components/StudentChatList";
+import Chat from "../components/Chat";
 import InternshipForm from "../components/InternshipForm";
 import RankingSystem from "../components/RankingSystem";
 
 function Dashboard() {
   const [role, setRole] = useState(null);
+  const [activeConversationId, setActiveConversationId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -66,7 +70,23 @@ function Dashboard() {
 
       {role === "student" ? (
         <>
+          <Notifications />
           <StudentProfile />
+          <div className="mt-6">
+            <h3 className="text-xl font-semibold mb-2">Your Conversations</h3>
+            <div className="flex gap-6">
+              <div className="w-1/3">
+                <StudentChatList onSelectConversation={setActiveConversationId} />
+              </div>
+              <div className="flex-1">
+                {activeConversationId ? (
+                  <Chat conversationId={activeConversationId} />
+                ) : (
+                  <p className="text-gray-500 mt-4">Select a conversation to start chatting</p>
+                )}
+              </div>
+            </div>
+          </div>
           <StudentMatching />
         </>
       ) : (

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { db, auth } from "../firebase";
-import { collection, getDocs, addDoc } from "firebase/firestore";
+import { collection, getDocs, addDoc, query, where, orderBy, serverTimestamp } from "firebase/firestore";
 import calculateMatchScore from "../utils/scoring";
 import { Star, TrendingUp } from "lucide-react";
 import Chat from "./Chat";
+import RecruiterChatList from "./RecruiterChatList";
+import { FIRESTORE_FIELDS } from "../constants/firestoreFields";
 
 function RankingSystem() {
   const [internships, setInternships] = useState([]);
@@ -12,7 +14,7 @@ function RankingSystem() {
   const [ranking, setRanking] = useState([]);
   const [shortlistedIds, setShortlistedIds] = useState([]);
   const [analytics, setAnalytics] = useState(null);
-  const [chatStudent, setChatStudent] = useState(null);
+  const [activeConversationId, setActiveConversationId] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -92,6 +94,48 @@ function RankingSystem() {
 
     setShortlistedIds([...shortlistedIds, student.id]);
     alert("Candidate Shortlisted!");
+  };
+
+  const openOrCreateConversation = async (student) => {
+    if (!selectedInternship) {
+      alert("Please select an internship first");
+      return;
+    }
+
+    console.log("Opening/creating conversation with student:", student.id);
+
+    // look for existing conversation
+    const q = query(
+      collection(db, "conversations"),
+      where(FIRESTORE_FIELDS.RECRUITER_ID, "==", auth.currentUser.uid),
+      where(FIRESTORE_FIELDS.STUDENT_ID, "==", student.id),
+      where(FIRESTORE_FIELDS.INTERNSHIP_ID, "==", selectedInternship.id),
+      orderBy(FIRESTORE_FIELDS.UPDATED_AT, "desc")
+    );
+
+    try {
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        // conversation exists, open it
+        console.log("Existing conversation found:", snap.docs[0].id);
+        setActiveConversationId(snap.docs[0].id);
+      } else {
+        // create new conversation
+        console.log("Creating new conversation...");
+        const convoRef = await addDoc(collection(db, "conversations"), {
+          recruiterId: auth.currentUser.uid,
+          studentId: student.id,
+          internshipId: selectedInternship.id,
+          lastMessage: "",
+          [FIRESTORE_FIELDS.UPDATED_AT]: serverTimestamp()
+        });
+        console.log("Conversation created:", convoRef.id);
+        setActiveConversationId(convoRef.id);
+      }
+    } catch (err) {
+      console.error("Error managing conversation:", err);
+      alert("Error: " + err.message);
+    }
   };
 
   return (
@@ -240,7 +284,7 @@ function RankingSystem() {
 
               <button
                 className="bg-green-600 text-white px-4 py-1 rounded-lg hover:bg-green-700 transition"
-                onClick={() => setChatStudent(student)}
+                onClick={() => openOrCreateConversation(student)}
               >
                 Chat
               </button>
@@ -249,13 +293,14 @@ function RankingSystem() {
         ))}
       </div>
 
-      {chatStudent && (
-        <Chat
-          recruiterId={auth.currentUser.uid}
-          studentId={chatStudent.id}
-          internshipId={selectedInternship?.id}
-        />
-      )}
+      {/* Recruiter Chat Section */}
+      <div className="mt-8 pt-6 border-t">
+        <h3 className="text-xl font-bold mb-4">Conversations</h3>
+        <div className="flex gap-4">
+          <RecruiterChatList onSelectConversation={setActiveConversationId} />
+          <Chat conversationId={activeConversationId} />
+        </div>
+      </div>
     </div>
   );
 }
