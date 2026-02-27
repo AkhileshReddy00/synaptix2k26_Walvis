@@ -4,6 +4,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import StudentProfile from "../components/StudentProfile";
+import StudentMatching from "../components/StudentMatching";
 import InternshipForm from "../components/InternshipForm";
 import RankingSystem from "../components/RankingSystem";
 
@@ -56,7 +57,10 @@ function Dashboard() {
       </div>
 
       {role === "student" ? (
-        <StudentProfile />
+        <>
+          <StudentProfile />
+          <StudentMatching />
+        </>
       ) : (
         <>
           <InternshipForm />
