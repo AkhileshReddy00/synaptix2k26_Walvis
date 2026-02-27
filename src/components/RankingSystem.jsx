@@ -4,9 +4,9 @@ import {
   collection,
   getDocs,
   addDoc,
-  query,
-  where,
-  orderBy,
+  doc,
+  getDoc,
+  setDoc,
   serverTimestamp
 } from "firebase/firestore";
 import calculateMatchScore from "../utils/scoring";
@@ -14,6 +14,10 @@ import { TrendingUp } from "lucide-react";
 import Chat from "./Chat";
 import RecruiterChatList from "./RecruiterChatList";
 import { FIRESTORE_FIELDS } from "../constants/firestoreFields";
+
+const toSafeIdPart = (value) => String(value).replace(/[^a-zA-Z0-9_-]/g, "_");
+const buildConversationId = (recruiterId, studentId, internshipId) =>
+  `conv_${toSafeIdPart(recruiterId)}_${toSafeIdPart(studentId)}_${toSafeIdPart(internshipId)}`;
 
 function RankingSystem() {
   const [internships, setInternships] = useState([]);
@@ -110,28 +114,27 @@ function RankingSystem() {
       return;
     }
 
-    const q = query(
-      collection(db, "conversations"),
-      where(FIRESTORE_FIELDS.RECRUITER_ID, "==", auth.currentUser.uid),
-      where(FIRESTORE_FIELDS.STUDENT_ID, "==", student.id),
-      where(FIRESTORE_FIELDS.INTERNSHIP_ID, "==", selectedInternship.id),
-      orderBy(FIRESTORE_FIELDS.UPDATED_AT, "desc")
-    );
-
     try {
-      const snap = await getDocs(q);
-      if (!snap.empty) {
-        setActiveConversationId(snap.docs[0].id);
-      } else {
-        const convoRef = await addDoc(collection(db, "conversations"), {
-          recruiterId: auth.currentUser.uid,
+      const recruiterId = auth.currentUser.uid;
+      const conversationId = buildConversationId(
+        recruiterId,
+        student.id,
+        selectedInternship.id
+      );
+      const conversationRef = doc(db, "conversations", conversationId);
+      const existingConversation = await getDoc(conversationRef);
+
+      if (!existingConversation.exists()) {
+        await setDoc(conversationRef, {
+          recruiterId,
           studentId: student.id,
           internshipId: selectedInternship.id,
           lastMessage: "",
           [FIRESTORE_FIELDS.UPDATED_AT]: serverTimestamp()
         });
-        setActiveConversationId(convoRef.id);
       }
+
+      setActiveConversationId(conversationId);
     } catch (err) {
       console.error("Error managing conversation:", err);
       alert("Error: " + err.message);
