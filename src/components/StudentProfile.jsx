@@ -30,8 +30,10 @@ function StudentProfile() {
   };
 
   return (
-    <div className="bg-white p-6 rounded shadow space-y-4">
-      <h2 className="text-xl font-semibold">Student Profile</h2>
+    <div className="bg-white/80 backdrop-blur-lg p-6 rounded-2xl shadow-lg border border-white/40 transition duration-300 hover:shadow-2xl hover:-translate-y-1 hover:ring-2 hover:ring-blue-400 animate-fadeIn space-y-4">
+      <h2 className="text-3xl font-bold tracking-tight text-slate-800">
+        Student Profile
+      </h2>
 
       <div className="flex gap-2">
         <input
@@ -50,7 +52,7 @@ function StudentProfile() {
           ))}
         </select>
         <button
-          className="bg-blue-600 text-white px-4 rounded"
+          className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition duration-300"
           onClick={addSkill}
         >
           Add
@@ -81,7 +83,7 @@ function StudentProfile() {
       />
 
       <button
-        className="bg-green-600 text-white px-6 py-2 rounded"
+        className="bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition duration-300"
         onClick={saveProfile}
       >
         Save Profile

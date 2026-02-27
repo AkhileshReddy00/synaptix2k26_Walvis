@@ -31,8 +31,10 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100">
-      <h1 className="text-3xl font-bold mb-6 text-blue-600">Register</h1>
+    <div className="min-h-screen flex flex-col justify-center items-center">
+      <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-indigo-600 bg-clip-text text-transparent border-b pb-4 mb-6">
+        Register
+      </h1>
 
       <input
         className="p-2 mb-3 border rounded w-64"
@@ -57,7 +59,7 @@ function Register() {
       </select>
 
       <button
-        className="bg-blue-600 text-white px-6 py-2 rounded"
+        className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition duration-300"
         onClick={handleRegister}
       >
         Register

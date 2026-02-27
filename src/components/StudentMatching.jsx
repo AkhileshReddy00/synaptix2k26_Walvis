@@ -56,10 +56,11 @@ function StudentMatching() {
   }, []);
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-lg mt-6">
-      <h2 className="text-2xl font-bold mb-4">
+    <div className="bg-white/80 backdrop-blur-lg p-6 rounded-2xl shadow-lg border border-white/40 transition duration-300 hover:shadow-2xl hover:-translate-y-1 hover:ring-2 hover:ring-blue-400 animate-fadeIn mt-6">
+      <h2 className="text-3xl font-bold tracking-tight text-slate-800 mb-1">
         Recommended Internships
       </h2>
+      <p className="text-sm text-gray-500 mb-4">Top opportunities tailored for you.</p>
 
       {results.length === 0 && (
         <p className="text-gray-500">No internships available yet.</p>
@@ -68,17 +69,17 @@ function StudentMatching() {
       {results.map((item, index) => (
         <div
           key={item.id}
-          className={`border p-5 rounded-xl mb-4 transition ${
+          className={`bg-white/80 backdrop-blur-lg border border-white/40 p-5 rounded-2xl mb-4 transition duration-300 hover:shadow-2xl hover:-translate-y-1 hover:ring-2 hover:ring-blue-400 animate-fadeIn ${
             index === 0
-              ? "bg-green-100 border-green-500 scale-105"
+              ? "bg-gradient-to-r from-green-100 to-emerald-100 border-green-400 ring-2 ring-green-400 scale-105"
               : "bg-gray-50"
           }`}
         >
           <div className="flex justify-between items-center">
-            <h3 className="font-semibold text-lg">
+            <h3 className="text-xl font-bold tracking-tight">
               {item.title}
             </h3>
-            <span className="text-green-700 font-bold text-xl">
+            <span className="text-3xl font-extrabold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
               {item.percentage}%
             </span>
           </div>

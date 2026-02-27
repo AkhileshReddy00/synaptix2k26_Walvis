@@ -88,11 +88,13 @@ function RankingSystem() {
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-lg space-y-4 mt-6">
+    <div className="bg-white/80 backdrop-blur-lg p-6 rounded-2xl shadow-lg border border-white/40 transition duration-300 hover:shadow-2xl hover:-translate-y-1 hover:ring-2 hover:ring-blue-400 animate-fadeIn space-y-4 mt-6">
       
-      <h2 className="text-2xl font-bold">AI-Based Candidate Ranking</h2>
+      <h2 className="text-3xl font-bold tracking-tight text-slate-800">
+        AI-Based Candidate Ranking
+      </h2>
 
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-gray-500 mt-1">
         Ranking is based on weighted skill matching with fairness boost for strong project work.
       </p>
 
@@ -113,7 +115,7 @@ function RankingSystem() {
       </select>
 
       <button
-        className="bg-blue-600 hover:bg-blue-700 transition text-white px-6 py-2 rounded"
+        className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition duration-300"
         onClick={generateRanking}
       >
         Generate Ranking
@@ -121,7 +123,7 @@ function RankingSystem() {
 
       {/* Summary Section */}
       {ranking.length > 0 && (
-        <div className="bg-blue-50 p-4 rounded border border-blue-300">
+        <div className="bg-white/80 backdrop-blur-lg p-4 rounded-2xl border border-white/40 transition duration-300 hover:shadow-2xl hover:-translate-y-1 hover:ring-2 hover:ring-blue-400 animate-fadeIn">
           <p className="font-semibold">
             Total Applicants: {ranking.length}
           </p>
@@ -132,7 +134,7 @@ function RankingSystem() {
       )}
 
       {analytics && (
-        <div className="grid grid-cols-3 gap-4 bg-gray-50 p-4 rounded-lg border">
+        <div className="grid grid-cols-3 gap-4 bg-white/80 backdrop-blur-lg p-4 rounded-2xl border border-white/40 transition duration-300 hover:shadow-2xl hover:-translate-y-1 hover:ring-2 hover:ring-blue-400 animate-fadeIn">
           <div>
             <p className="text-sm text-gray-500">Applicants</p>
             <p className="text-xl font-bold">{ranking.length}</p>
@@ -158,15 +160,15 @@ function RankingSystem() {
         {ranking.map((student, index) => (
           <div
             key={student.id}
-            className={`border p-4 rounded-xl shadow-sm transition ${
+            className={`bg-white/80 backdrop-blur-lg p-4 rounded-2xl shadow-lg border border-white/40 transition duration-300 hover:shadow-2xl hover:-translate-y-1 hover:ring-2 hover:ring-blue-400 animate-fadeIn ${
               index === 0
-                ? "bg-green-100 border-green-500 scale-105"
+                ? "bg-gradient-to-r from-green-100 to-emerald-100 border-green-400 ring-2 ring-green-400 scale-105"
                 : "bg-gray-50"
             }`}
           >
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="text-lg font-semibold">
+                <h3 className="text-xl font-bold tracking-tight">
                   Rank {index + 1}
                 </h3>
                 <p className="text-sm text-gray-600">
@@ -175,7 +177,7 @@ function RankingSystem() {
               </div>
 
               <div className="text-right">
-                <p className="text-2xl font-bold text-green-700">
+                <p className="text-3xl font-extrabold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
                   {student.percentage}%
                 </p>
                 <p className="text-sm text-gray-500">
@@ -205,10 +207,10 @@ function RankingSystem() {
             {/* Shortlist Action */}
             <div className="mt-4 flex justify-end">
               {shortlistedIds.includes(student.id) ? (
-                <span className="text-green-700 font-semibold">Shortlisted ✓</span>
+                <span className="bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent font-semibold">Shortlisted ✓</span>
               ) : (
                 <button
-                  className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-1 rounded text-sm"
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition duration-300"
                   onClick={() => shortlistCandidate(student)}
                 >
                   Shortlist

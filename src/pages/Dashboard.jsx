@@ -42,14 +42,14 @@ function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-10">
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 p-10">
       <h2>ROLE: {role}</h2>
-      <div className="flex justify-between mb-6">
-        <h1 className="text-3xl font-bold text-blue-600">
+      <div className="flex justify-between border-b pb-4 mb-6">
+        <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-indigo-600 bg-clip-text text-transparent">
           {role === "student" ? "Student Dashboard" : "Recruiter Dashboard"}
         </h1>
         <button
-          className="bg-red-500 text-white px-4 py-2 rounded"
+          className="bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold px-4 py-2 rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition duration-300"
           onClick={handleLogout}
         >
           Logout
