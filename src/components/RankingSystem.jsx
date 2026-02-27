@@ -3,6 +3,7 @@ import { db, auth } from "../firebase";
 import { collection, getDocs, addDoc } from "firebase/firestore";
 import calculateMatchScore from "../utils/scoring";
 import { Star, TrendingUp } from "lucide-react";
+import Chat from "./Chat";
 
 function RankingSystem() {
   const [internships, setInternships] = useState([]);
@@ -11,6 +12,7 @@ function RankingSystem() {
   const [ranking, setRanking] = useState([]);
   const [shortlistedIds, setShortlistedIds] = useState([]);
   const [analytics, setAnalytics] = useState(null);
+  const [chatStudent, setChatStudent] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,10 +54,13 @@ function RankingSystem() {
         ((scoreData.finalScore / maxPossibleScore) * 100).toFixed(1)
       );
 
+      const fullyMatched = scoreData.gaps?.length === 0;
+
       return {
         ...student,
         ...scoreData,
-        percentage
+        percentage,
+        fullyMatched
       };
     });
 
@@ -74,13 +79,14 @@ function RankingSystem() {
     });
   };
 
-  const shortlistCandidate = async (student) => {
+  const shortlistStudent = async (student) => {
     if (!selectedInternship) return;
 
-    await addDoc(collection(db, "shortlisted"), {
+    await addDoc(collection(db, "shortlists"), {
       recruiterId: auth.currentUser.uid,
       studentId: student.id,
       internshipId: selectedInternship.id,
+      status: "shortlisted",
       createdAt: new Date()
     });
 
@@ -160,23 +166,45 @@ function RankingSystem() {
           >
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="text-xl font-bold tracking-tight flex items-center">
-                  {index === 0 && <Star className="w-5 h-5 text-yellow-400 mr-1" />}
-                  Rank {index + 1}
+                <h3 className="text-lg font-bold">
+                  {student.name || "Unnamed Student"}
                 </h3>
-                <p className="text-sm text-gray-600">
+
+                <p className="text-sm text-gray-500">
+                  {student.email}
+                </p>
+
+                <p className="text-sm text-gray-600 mt-1">
                   CGPA: {student.cgpa} | Projects: {student.projects}
                 </p>
+
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {student.skills?.map((skill, i) => (
+                    <span
+                      key={i}
+                      className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full"
+                    >
+                      {skill.name} ({skill.level})
+                    </span>
+                  ))}
+                </div>
               </div>
 
               <div className="text-right">
-                <p className="text-3xl font-extrabold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 mr-1" /> {student.percentage}%
-                </p>
-                <p className="text-sm text-gray-500">
-                  Score: {student.finalScore}
-                </p>
-              </div>
+  <p className="text-2xl font-bold text-green-600">
+    {student.percentage}%
+  </p>
+
+  {student.fullyMatched && (
+    <span className="ml-2 text-xs bg-green-600 text-white px-2 py-1 rounded-full">
+      Meets All Requirements
+    </span>
+  )}
+
+  <p className="text-sm text-gray-500">
+    Score: {student.finalScore}
+  </p>
+</div>
             </div>
 
             {/* Skill Breakdown */}
@@ -197,22 +225,37 @@ function RankingSystem() {
               ))}
             </div>
 
-            {/* Shortlist Action */}
-            <div className="mt-4 flex justify-end">
+            {/* Shortlist + chat buttons */}
+            <div className="mt-4 flex justify-end gap-2">
               {shortlistedIds.includes(student.id) ? (
                 <span className="bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent font-semibold">Shortlisted ✓</span>
               ) : (
                 <button
                   className="bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold px-6 py-2 rounded-xl shadow-md hover:shadow-xl hover:scale-105 active:scale-95 transition duration-200"
-                  onClick={() => shortlistCandidate(student)}
+                  onClick={() => shortlistStudent(student)}
                 >
                   Shortlist
                 </button>
               )}
+
+              <button
+                className="bg-green-600 text-white px-4 py-1 rounded-lg hover:bg-green-700 transition"
+                onClick={() => setChatStudent(student)}
+              >
+                Chat
+              </button>
             </div>
           </div>
         ))}
       </div>
+
+      {chatStudent && (
+        <Chat
+          recruiterId={auth.currentUser.uid}
+          studentId={chatStudent.id}
+          internshipId={selectedInternship?.id}
+        />
+      )}
     </div>
   );
 }
